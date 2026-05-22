@@ -21,8 +21,9 @@ class VisualFeatHandler:
             cls.__instance = cls()
         return cls.__instance
     
-    def __init__(self):
-        model_path = "../data/huggingface/blip2-flan-t5-xl"
+    def __init__(self, load_blip2=None):
+        if load_blip2 is None:
+            load_blip2 = os.environ.get("SEQVLM_LOAD_BLIP2", "0") == "1"
         tokenizer_path = '../data/huggingface/clip-vit-base-patch16'
         
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, 
@@ -30,8 +31,12 @@ class VisualFeatHandler:
                                                        use_fast=True, 
                                                        clean_up_tokenization_spaces=True)
         self.clip = CLIPModel.from_pretrained(tokenizer_path).cuda()
-        self.processor = Blip2Processor.from_pretrained(model_path, clean_up_tokenization_spaces=True)
-        self.model = Blip2ForConditionalGeneration.from_pretrained(model_path, torch_dtype=torch.float16).cuda()
+        self.processor = None
+        self.model = None
+        if load_blip2:
+            model_path = "../data/huggingface/blip2-flan-t5-xl"
+            self.processor = Blip2Processor.from_pretrained(model_path, clean_up_tokenization_spaces=True)
+            self.model = Blip2ForConditionalGeneration.from_pretrained(model_path, torch_dtype=torch.float16).cuda()
 
 
         self.class_name_list = list(CLASS_LABELS_200)
@@ -84,6 +89,8 @@ class VisualFeatHandler:
     def judge_consistency(self, obj_name, images, ratio=0.25) -> bool:
         if len(images) == 0:
             return False
+        if self.model is None or self.processor is None:
+            return True
         prompt = [f"Question: Is there a {obj_name}? Answer:"] * len(images)
         inputs = self.processor(images=images, text=prompt, return_tensors="pt").to('cuda', torch.float16)
 

@@ -1,5 +1,5 @@
 export PYTHONPATH=$(dirname "$PWD")
 python evaluate.py \
---exp_name visprog_test \
+--exp_name visprog_scanrefer \
 --image_path ../data/scanrefer_preprocessed \
---vlm_model doubao-vision
+--vlm_model qwen

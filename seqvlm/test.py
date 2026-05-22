@@ -22,6 +22,6 @@ if __name__ == '__main__':
     }]
     
     
-    result = invoke_api('doubao-vision', msg)
+    result = invoke_api('qwen', msg)
     print(result)
     

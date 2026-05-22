@@ -1,5 +1,5 @@
 export PYTHONPATH=$(dirname "$PWD")
 python evaluate_nr3d.py \
---exp_name visprog_test \
+--exp_name visprog_nr3d \
 --image_path ../data/nr3d_preprocessed \
---vlm_model doubao-vision
+--vlm_model qwen

@@ -16,6 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('--max_retry', type=int, default=3)
     parser.add_argument('--max_batch_size', type=int, default=4)
     parser.add_argument('--max_vlm_props', type=int, default=40)
+    parser.add_argument('--max_samples', type=int, default=None, help='limit eval samples for smoke test')
     
     args = parser.parse_args()
     
@@ -51,6 +52,9 @@ if __name__ == '__main__':
     predictor = AdpativePredictor(**vlm_configs)
     logger = create_logger(args.exp_name)
     
+    if args.max_samples is not None:
+        eval_data = eval_data[:args.max_samples]
+
     for i, task in enumerate(eval_data):
         scene_id, obj_id, caption, prog_str, is_easy, is_dep, obj_name = task.values()
         # print(task)

@@ -14,7 +14,10 @@ def load_seg_inst(scene_id):
     root_dir = '../data/mask3d/scannet200'
     data = np.load(os.path.join(root_dir, scene_id + '.npz'), allow_pickle=True)
     ins_labels = list(data['ins_labels'])
-    ins_scores = [float(x) for x in data['ins_scores']]
+    if 'ins_scores' in data.files:
+        ins_scores = [float(x) for x in data['ins_scores']]
+    else:
+        ins_scores = [1.0] * len(ins_labels)
     
     ins_locs = []
     scene_pc = []

@@ -10,7 +10,6 @@ init(autoreset=True)
 from prompts.prompt import *
 from utils import *
 from api import invoke_api
-from visprog.program import ProgramInterpreter
 from seqvlm.feat_handler_nr3d import VisualFeatHandler
 
 
@@ -35,7 +34,6 @@ class AdpativePredictor:
         self.max_batch_size = kwargs.get('max_batch_size')
         self.max_vlm_props = kwargs.get('max_vlm_props')
         
-        self.prog_inter = ProgramInterpreter()
         self.handler = VisualFeatHandler.get_instance()
 
     
@@ -64,14 +62,6 @@ class AdpativePredictor:
             if pred is not None:
                 return ins_locs[index[pred]], True
 
-        try:
-            init_state = {'scene_id': scene_id}
-            result = self.prog_inter.execute(prog_str, init_state)
-            if result:
-                return result[0]['obj_loc'], False
-        except Exception as e:
-            print(Fore.RED + f'Except: {e}')
-            
         return None, False
 
     
