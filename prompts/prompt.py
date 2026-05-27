@@ -1,3 +1,12 @@
+'''
+VLM调用：Prompt
+SeqVLM 的 VLM 决策是从一个 batch 的候选 canvas 中选择一个 image_id
+VLM 输出格式固定为：
+{
+  "process": "...",
+  "image_id": 1
+}
+'''
 SYSTEM_PROMPT = """Imagine you are in a room and you are aksed to find one object.
 
 Given a series of images and a query describing a specific object in the room, you need to analyze the images, and find an image that best fits the query.

@@ -1,4 +1,6 @@
-
+'''
+视角生成:裁剪图像
+'''
 import os
 import cv2
 import numpy as np
@@ -24,6 +26,7 @@ class PointCloudToImageMapper(object):
 
     def compute_mapping(self, camera_to_world, coords, depth, image_dim, intrinsic):
         """
+        做 3D point → 2D pixel 投影，并用 depth 做可见性/遮挡过滤。
         :param camera_to_world: 4 x 4
         :param coords: N x 3 format
         :param depth: H x W format
@@ -85,6 +88,11 @@ def plot_scene(pts, fig_name):
 
 
 def process_scene(scene_id, image_root, point2img_mapper, save_dir):
+    '''
+    对每个 proposal 遍历所有 posed images, 然后存 crop 图
+    目前代码里 k = 5 ，且实际使用的是 random.sample 随机选 5 张，而不是按投影面积 top-k
+    这里是后续做动态选视角、anchor-aware 视角选择、top-k 视角重排的主要改点。
+    '''
     start_time = time.time()
     process = psutil.Process(os.getpid())
     start_cpu = process.cpu_percent(interval=None)  # 第一次调用返回0，需要等下一次

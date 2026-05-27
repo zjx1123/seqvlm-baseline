@@ -1,3 +1,6 @@
+'''
+数据加载
+'''
 import base64
 from collections import defaultdict
 import json
@@ -11,6 +14,13 @@ from io import BytesIO
 
 
 def load_seg_inst(scene_id):
+    '''
+    把 Mask3D proposal 转成：
+    ins_labels: proposal 类别
+    ins_locs:   proposal 3D bbox, [cx, cy, cz, sx, sy, sz]
+    ins_scores: proposal 置信度
+    center:     scene center
+    '''
     root_dir = '../data/mask3d/scannet200'
     data = np.load(os.path.join(root_dir, scene_id + '.npz'), allow_pickle=True)
     ins_labels = list(data['ins_labels'])

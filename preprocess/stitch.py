@@ -1,3 +1,6 @@
+'''
+视角生成:拼接图像
+'''
 import os
 import cv2
 import mmengine

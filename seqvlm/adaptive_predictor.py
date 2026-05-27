@@ -1,3 +1,6 @@
+'''
+候选框生成/筛选： ScanRefer
+'''
 import glob
 import json
 import os
@@ -10,6 +13,7 @@ from prompts.prompt import *
 from utils import *
 from api import invoke_api
 from seqvlm.feat_handler import VisualFeatHandler
+
 
 
 class AdpativePredictor:
@@ -25,6 +29,13 @@ class AdpativePredictor:
 
     
     def execute(self, scene_id, obj_name, caption, prog_str):
+        '''
+        query obj_name
+        → CLIP 预测目标类别 pred_cls
+        → 只保留 Mask3D label == pred_cls 的置信度高于0.2的proposal
+        → 找对应 canvas.jpg
+        → 交给 VLM 迭代选择
+        '''
         ins_labels, ins_locs, ins_scores, _ = load_seg_inst(scene_id)
         pred_cls = self.handler.predict_obj_class(obj_name, ins_labels)
         

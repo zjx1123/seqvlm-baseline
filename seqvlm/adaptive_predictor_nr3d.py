@@ -1,3 +1,6 @@
+'''
+候选框生成/筛选： NR3D
+'''
 import glob
 import json
 import os
@@ -13,7 +16,9 @@ from api import invoke_api
 from seqvlm.feat_handler_nr3d import VisualFeatHandler
 
 
-
+'''
+加载3D特征： feats_3d.pkl
+'''
 with open('../data/feats_3d.pkl', 'rb') as f:
     feats = pickle.load(f)
 def load_pc(scan_id):
@@ -38,6 +43,13 @@ class AdpativePredictor:
 
     
     def execute(self, scene_id, obj_name, caption, prog_str):
+        '''
+        候选框筛选逻辑：
+        1. 根据 obj_name 预测目标类别 pred_cls
+        2. 只保留 obj_embeds 中 类别为 pred_cls 的 proposal
+        3. 找对应 canvas.jpg
+        4. 交给 VLM 迭代选择
+        '''
         # ins_labels, ins_locs, ins_scores, _ = load_seg_inst(scene_id)
         obj_ids, ins_locs, center, obj_embeds = load_pc(scene_id)
         # pred_cls = self.handler.predict_obj_class(obj_name, ins_labels)
